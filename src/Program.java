@@ -32,10 +32,10 @@ public class Program {
 		JPanel jPanel3=new JPanel();
 		JPanel jPanel4=new JPanel();
  
-		jPanel.setBackground(Color.GREEN);
-		jPanel2.setBackground(Color.YELLOW);
-		jPanel3.setBackground(Color.RED);
-		jPanel4.setBackground(Color.BLUE);
+		//jPanel.setBackground(Color.GREEN);
+		//jPanel2.setBackground(Color.YELLOW);
+		//jPanel3.setBackground(Color.RED);
+		//jPanel4.setBackground(Color.BLUE);
  
 	//	jFrame.getContentPane().setLayout(new GridLayout(1,2));
         jFrame.getContentPane().setLayout(new BorderLayout(10,10));
@@ -76,29 +76,62 @@ public class Program {
         jPanel2.add(label);
         jPanel2.add(textarea);
         
-        jPanel3.setLayout(new GridLayout(4,2,5,5));
+        jPanel3.setLayout(new GridLayout(2,2,5,5));
+        
+        JPanel jPanel5=new JPanel();
+        jPanel5.setLayout(new BoxLayout(jPanel5, BoxLayout.Y_AXIS));   
         JLabel label1 = new JLabel("Attributs");
-        label1.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel label2 = new JLabel("Methodes");
-        label2.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel label3 = new JLabel("Sous-Classes");
-        label3.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel label4 = new JLabel("Associations/Aggregations");
-        label4.setHorizontalAlignment(SwingConstants.CENTER);
         JTextArea textarea1=new JTextArea();
+       // JTextField textarea1=new JTextField();
+        jPanel5.add(label1);
+        jPanel5.add(textarea1);
+        
+        JPanel jPanel6=new JPanel();
+        jPanel6.setLayout(new BoxLayout(jPanel6, BoxLayout.Y_AXIS));
+        JLabel label2 = new JLabel("Methodes");
         JTextArea textarea2=new JTextArea();
+        jPanel6.add(label2);
+        jPanel6.add(textarea2);
+        
+        JPanel jPanel7=new JPanel();
+        jPanel7.setLayout(new BoxLayout(jPanel7, BoxLayout.Y_AXIS));
+        JLabel label3 = new JLabel("Sous-Classes");
         JTextArea textarea3=new JTextArea();
+        jPanel7.add(label3);
+        jPanel7.add(textarea3);
+        
+        JPanel jPanel8=new JPanel();
+        jPanel8.setLayout(new BoxLayout(jPanel8, BoxLayout.Y_AXIS));
+        JLabel label4 = new JLabel("Associations/Aggregations");
         JTextArea textarea4=new JTextArea();
+        jPanel8.add(label4);
+        jPanel8.add(textarea4);
         
-        jPanel3.add(label1);
-        jPanel3.add(label2);
-        jPanel3.add(textarea1);
-        jPanel3.add(textarea2);
-        jPanel3.add(label3);
-        jPanel3.add(label4);
-        jPanel3.add(textarea3);
-        jPanel3.add(textarea4);
+        //label1.setHorizontalAlignment(SwingConstants.CENTER);
+       
+        //label2.setHorizontalAlignment(SwingConstants.CENTER);
         
+      //  label3.setHorizontalAlignment(SwingConstants.CENTER);
+        
+      //  label4.setHorizontalAlignment(SwingConstants.CENTER);
+        
+       
+       
+       
+        
+      //  jPanel3.add(label1);
+       // jPanel3.add(label2);
+      //  jPanel3.add(textarea1);
+        //jPanel3.add(textarea2);
+        //jPanel3.add(label3);
+        //jPanel3.add(label4);
+        //jPanel3.add(textarea3);
+        //jPanel3.add(textarea4);
+        
+        jPanel3.add(jPanel5);
+        jPanel3.add(jPanel6);
+        jPanel3.add(jPanel7);
+        jPanel3.add(jPanel8);
         
         jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.Y_AXIS));
         jPanel4.setPreferredSize(new Dimension(10,100));
