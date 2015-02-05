@@ -1,11 +1,132 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+
 
 public class Program {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Hello World");
-		System.out.println("Hello Word again");
+ 
 
-	}
+    public static void main(String s[]) {
+
+ 
+
+      //  JFrame frame = new JFrame("JFrame Example");
+        JFrame jFrame=new JFrame();
+        JPanel jPanel=new JPanel();
+		JPanel jPanel2=new JPanel();
+		JPanel jPanel3=new JPanel();
+		JPanel jPanel4=new JPanel();
+ 
+		jPanel.setBackground(Color.GREEN);
+		jPanel2.setBackground(Color.YELLOW);
+		jPanel3.setBackground(Color.RED);
+		jPanel4.setBackground(Color.BLUE);
+ 
+	//	jFrame.getContentPane().setLayout(new GridLayout(1,2));
+        jFrame.getContentPane().setLayout(new BorderLayout(10,10));
+		jFrame.getContentPane().add(jPanel,BorderLayout.NORTH);
+		jFrame.getContentPane().add(jPanel2,BorderLayout.WEST);
+		jFrame.getContentPane().add(jPanel3,BorderLayout.CENTER);
+		jFrame.getContentPane().add(jPanel4,BorderLayout.SOUTH);
+
+
+        JPanel panel = new JPanel();
+
+        jPanel.setLayout(new FlowLayout());
+      //  JLabel label = new JLabel("This is a label!");
+        JTextField textfield=new JTextField(12);
+         JButton button = new JButton();
+        button.setText("Charger Fchier");
+
+ 
+
+       // panel.add(label);
+
+        jPanel.add(button);
+        jPanel.add(textfield);
+ 
+
+      //  JPanel panel1 = new JPanel();
+
+        jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.Y_AXIS));
+        jPanel2.setPreferredSize(new Dimension(200,200));
+        JLabel label = new JLabel("Classes");
+        JTextArea textarea=new JTextArea();
+         
+
+ 
+
+       // panel.add(label);
+
+        jPanel2.add(label);
+        jPanel2.add(textarea);
+        
+        jPanel3.setLayout(new GridLayout(4,2,5,5));
+        JLabel label1 = new JLabel("Attributs");
+        label1.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel label2 = new JLabel("Methodes");
+        label2.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel label3 = new JLabel("Sous-Classes");
+        label3.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel label4 = new JLabel("Associations/Aggregations");
+        label4.setHorizontalAlignment(SwingConstants.CENTER);
+        JTextArea textarea1=new JTextArea();
+        JTextArea textarea2=new JTextArea();
+        JTextArea textarea3=new JTextArea();
+        JTextArea textarea4=new JTextArea();
+        
+        jPanel3.add(label1);
+        jPanel3.add(label2);
+        jPanel3.add(textarea1);
+        jPanel3.add(textarea2);
+        jPanel3.add(label3);
+        jPanel3.add(label4);
+        jPanel3.add(textarea3);
+        jPanel3.add(textarea4);
+        
+        
+        jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.Y_AXIS));
+        jPanel4.setPreferredSize(new Dimension(10,100));
+        JLabel label5 = new JLabel("Details");
+        JTextArea textarea5=new JTextArea();
+        
+        jPanel4.add(label5);
+        jPanel4.add(textarea5);
+       /* 
+        frame.add(panel);
+        frame.add(panel1);
+
+        frame.setSize(300, 300);
+
+        frame.setLocationRelativeTo(null);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+       frame.setVisible(true);*/
+        
+        jFrame.setSize(640,480);
+		jFrame.setVisible(true);
+		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+ 
+
+    }
+
+ 
 
 }
