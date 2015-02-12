@@ -22,6 +22,10 @@ public class Program {
  
 
     public static void main(String s[]) {
+    	
+    	Parser parser = new Parser("test.txt");
+    	
+    	parser.ParseFile();
 
  
 
