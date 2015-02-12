@@ -25,7 +25,39 @@ public class Parser {
 	void ParseFile()
 	{
 		parsedFile.AddModel(ParseModel());
-		parsedFile.AddClass(ParseClass());
+		while(scanner.hasNext())
+		{
+			if(scanner.hasNext(Pattern.compile("MODEL")))
+			{
+				parsedFile.AddModel(ParseModel());
+			}
+			else if (scanner.hasNext(Pattern.compile("CLASS")))
+			{
+				parsedFile.AddClass(ParseClass());
+				scanner.next();
+			}
+			else if (scanner.hasNext(Pattern.compile("GENERALIZATION")))
+			{
+				parsedFile.AddGeneralization(ParseGeneralization());
+				scanner.next();
+			}
+			else if(scanner.hasNext(Pattern.compile("RELATION")))
+			{
+				parsedFile.AddAssociation(ParseAssociation());
+				scanner.next();
+			}
+			else if (scanner.hasNext(Pattern.compile("AGGREGATION")))
+			{
+				parsedFile.AddAggregation(ParseAggregation());
+				scanner.next();
+			}
+			
+		}
+		while(scanner.hasNext(Pattern.compile("CLASS")))
+		{
+			parsedFile.AddClass(ParseClass());
+			scanner.next();
+		}
 	}
 	
 	Model ParseModel()
@@ -57,6 +89,10 @@ public class Parser {
 			String attributeName = scanner.next();
 			scanner.next();
 			String attributeType = scanner.next();
+			if(attributeType.charAt(attributeType.length()-1) == ',')
+			{
+				attributeType = attributeType.substring(0, attributeType.length()-1);
+			}
 			
 			attributes.addElement(new UMLAttribute(attributeName, attributeType));
 		}		
@@ -116,6 +152,70 @@ public class Parser {
 		}		
 		lineScanner.close();
 		return attributes;
+	}
+	
+	UMLAssociation ParseAssociation()
+	{
+		scanner.next();
+		String associationName = scanner.next();
+		scanner.next();
+		scanner.next();
+		String firstRole = scanner.next();
+		String firstRoleMultiplicity = scanner.next();
+		scanner.next();
+		String secondRole = scanner.next();
+		String secondRoleMultiplicity = scanner.next();
+		
+		return new UMLAssociation(associationName, new UMLRole(firstRole, firstRoleMultiplicity), new UMLRole(secondRole, secondRoleMultiplicity));
+		
+	}
+	
+	UMLAggregation ParseAggregation()
+	{
+		Vector<UMLRole> parts = new Vector<UMLRole>();
+		
+		scanner.next();
+		scanner.next();
+		scanner.next();
+		String containerName = scanner.next();
+		String containerMultiplicity = scanner.next();
+		scanner.next();
+		while(scanner.hasNext(Pattern.compile("CLASS")))
+		{
+			scanner.next();
+			String partName = scanner.next();
+			String partMultiplicity = scanner.next();
+			
+			if(partMultiplicity.charAt(partMultiplicity.length()-1) == ',')
+			{
+				partMultiplicity = partMultiplicity.substring(0, partMultiplicity.length()-1);
+			}
+			parts.addElement(new UMLRole(partName, partMultiplicity));
+		}
+
+		return new UMLAggregation(new UMLRole(containerName, containerMultiplicity), parts);		
+	}
+	
+	UMLGeneralization ParseGeneralization()
+	{
+		Vector<String> subClasses = new Vector<String>();
+		scanner.next();
+		String generalizationName = scanner.next();
+		scanner.next();
+		while(!scanner.hasNext(Pattern.compile(";")))
+		{
+			String subClass = scanner.next();
+			
+			if(subClass.charAt(subClass.length()-1) == ',')
+			{
+				subClass = subClass.substring(0, subClass.length()-1);
+			}
+			subClasses.addElement(subClass);
+			
+		}
+		
+		return new UMLGeneralization(generalizationName, subClasses);
+		
 	}
 
 	
