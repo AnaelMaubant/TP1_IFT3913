@@ -77,8 +77,10 @@ public class Parser {
 		umlClass.AddOperations(ParseClassOperations());
 		
 		return umlClass;
+	
 		
 	}
+
 	
 	Vector<UMLAttribute> ParseClassAttributes()
 	{
@@ -184,6 +186,7 @@ public class Parser {
 		{
 			scanner.next();
 			String partName = scanner.next();
+			
 			String partMultiplicity = scanner.next();
 			
 			if(partMultiplicity.charAt(partMultiplicity.length()-1) == ',')
@@ -223,6 +226,6 @@ public class Parser {
 	 ParsedFile parsedFile;
 	 
 	int currentIndex =0;
-
-
+	
+ 	
 }

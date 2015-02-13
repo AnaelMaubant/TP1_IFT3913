@@ -19,6 +19,11 @@ public class UMLClass {
 		_operations = operations;
 	}
 	
+	String getName()
+	{
+		return _name;
+	}
+	
 	Vector<UMLAttribute> _attributes;
 	Vector<UMLOperation> _operations;
 	String _name;
