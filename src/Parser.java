@@ -71,7 +71,7 @@ public class Parser {
 	{
 		scanner.next();
 		String className = scanner.next();
-		
+	//	System.out.println(className);
 		UMLClass umlClass= new UMLClass(className);
 		umlClass.AddAttributes(ParseClassAttributes());
 		umlClass.AddOperations(ParseClassOperations());
@@ -89,13 +89,15 @@ public class Parser {
 		while(!scanner.hasNext(Pattern.compile("OPERATIONS")))
 		{
 			String attributeName = scanner.next();
+		//	System.out.println(attributeName);
 			scanner.next();
 			String attributeType = scanner.next();
 			if(attributeType.charAt(attributeType.length()-1) == ',')
 			{
 				attributeType = attributeType.substring(0, attributeType.length()-1);
+			//	System.out.println(attributeType);
 			}
-			
+		//	System.out.println(attributes);
 			attributes.addElement(new UMLAttribute(attributeName, attributeType));
 		}		
 		return attributes;
@@ -153,6 +155,7 @@ public class Parser {
 			attributes.addElement(new UMLAttribute(attributeName, attributeType));			
 		}		
 		lineScanner.close();
+		System.out.println(attributes);
 		return attributes;
 	}
 	
@@ -221,11 +224,16 @@ public class Parser {
 		
 	}
 
-	
+
 	 Scanner scanner ;
 	 ParsedFile parsedFile;
 	 
 	int currentIndex =0;
+	
+	
+	
+	 
+	
 	
  	
 }

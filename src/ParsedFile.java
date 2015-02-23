@@ -37,6 +37,9 @@ public class ParsedFile {
 		_generalizations.addElement(generalization);
 	}
 	
+	
+	
+	
 	Model _model;
 	Vector<UMLClass> _classes;
 	Vector<UMLAssociation> _associations;

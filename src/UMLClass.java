@@ -2,9 +2,9 @@ import java.util.Vector;
 
 
 public class UMLClass {
-	UMLClass(String name)
+	UMLClass(String className)
 	{
-		_name = name;
+		_name = className;
 		_attributes = new Vector<UMLAttribute>();
 		_operations = new Vector<UMLOperation>();
 	}
@@ -19,13 +19,18 @@ public class UMLClass {
 		_operations = operations;
 	}
 	
-	String getName()
+	/*static UMLClass getName(String nom)
 	{
-		return _name;
-	}
+		 for (int i=0, max = liste.size(); i<max; i++)
+	            if (liste.get(i).equals(nom))
+	                return liste.get(i);
+	        return null;  
+	}*/
+	
+	
 	
 	Vector<UMLAttribute> _attributes;
 	Vector<UMLOperation> _operations;
 	String _name;
-
+	
 }
