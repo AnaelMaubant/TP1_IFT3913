@@ -305,7 +305,9 @@ public class Program {
     }
     
     public static void CreateOperationDetails(UMLOperation operation)
-    {}
+    {
+    	//String textAreaContent = operation.
+    }
     public static void CreateAttributeDetails(UMLAttribute attribute)
     {}
     public static void CreateSubClassesDetails(String subClass)
