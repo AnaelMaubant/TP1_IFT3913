@@ -6,6 +6,12 @@ public class UMLRole {
 		_className = className;
 		_multiplicity = multiplicity;
 	}
+	
+	public String toString()
+	{
+		return _className;
+	}
+	
 	String _className;
 	String _multiplicity;
 

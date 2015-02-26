@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Vector;
 
 
@@ -5,10 +6,10 @@ public class ParsedFile {
 	
 	ParsedFile()
 	{
-		_classes = new Vector<UMLClass>();
-		_associations = new Vector<UMLAssociation>();
-		_aggregations = new Vector<UMLAggregation>();
-		_generalizations = new Vector<UMLGeneralization>();
+		_classes = new HashMap<String, UMLClass>();
+		_associations = new HashMap<String, UMLAssociation>();
+		_aggregations = new HashMap<String, UMLAggregation>();
+		_generalizations = new HashMap<String, UMLGeneralization>();
 		
 	}
 	
@@ -19,32 +20,32 @@ public class ParsedFile {
 	
 	void AddClass(UMLClass umlClass)
 	{
-		_classes.addElement(umlClass);
+		_classes.put(umlClass.toString(),umlClass);
 	}
 	
 	void AddAssociation(UMLAssociation association)
 	{
-		_associations.addElement(association);
+		_associations.put(association._name, association);
 	}
 	
 	void AddAggregation(UMLAggregation aggregation)
 	{
-		_aggregations.addElement(aggregation);
+		_aggregations.put(aggregation._container._className, aggregation);
 	}
 	
 	void AddGeneralization(UMLGeneralization generalization)
 	{
-		_generalizations.addElement(generalization);
+		_generalizations.put(generalization.toString(), generalization);
 	}
 	
 	
 	
 	
 	Model _model;
-	Vector<UMLClass> _classes;
-	Vector<UMLAssociation> _associations;
-	Vector<UMLAggregation> _aggregations;
-	Vector<UMLGeneralization> _generalizations;
+	HashMap<String, UMLClass> _classes;
+	HashMap<String, UMLAssociation> _associations;
+	HashMap<String, UMLAggregation> _aggregations;
+	HashMap<String, UMLGeneralization> _generalizations;
 
 }
 

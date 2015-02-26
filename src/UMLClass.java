@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Vector;
 
 
@@ -5,32 +6,29 @@ public class UMLClass {
 	UMLClass(String className)
 	{
 		_name = className;
-		_attributes = new Vector<UMLAttribute>();
-		_operations = new Vector<UMLOperation>();
+		_attributes = new HashMap<String, UMLAttribute>();
+		_operations = new HashMap<String, UMLOperation>();
 	}
 	
-	void AddAttributes(Vector<UMLAttribute> attributes)
+	void AddAttributes(HashMap<String, UMLAttribute> attributes)
 	{
 		_attributes = attributes;
 	}
 	
-	void AddOperations(Vector<UMLOperation> operations)
+	void AddOperations(HashMap<String, UMLOperation> operations)
 	{
 		_operations = operations;
 	}
 	
-	/*static UMLClass getName(String nom)
+	public String toString()
 	{
-		 for (int i=0, max = liste.size(); i<max; i++)
-	            if (liste.get(i).equals(nom))
-	                return liste.get(i);
-	        return null;  
-	}*/
+        return _name;
+	}
 	
 	
 	
-	Vector<UMLAttribute> _attributes;
-	Vector<UMLOperation> _operations;
+	HashMap<String, UMLAttribute> _attributes;
+	HashMap<String, UMLOperation> _operations;
 	String _name;
 	
 }

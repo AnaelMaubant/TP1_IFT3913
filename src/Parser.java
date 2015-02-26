@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Vector;
 import java.util.regex.Pattern;
@@ -82,9 +83,9 @@ public class Parser {
 	}
 
 	
-	Vector<UMLAttribute> ParseClassAttributes()
+	HashMap<String, UMLAttribute> ParseClassAttributes()
 	{
-		Vector<UMLAttribute> attributes = new Vector<UMLAttribute>();
+		HashMap<String, UMLAttribute> attributes = new HashMap<String, UMLAttribute>();
 		scanner.next();
 		while(!scanner.hasNext(Pattern.compile("OPERATIONS")))
 		{
@@ -98,14 +99,14 @@ public class Parser {
 			//	System.out.println(attributeType);
 			}
 		//	System.out.println(attributes);
-			attributes.addElement(new UMLAttribute(attributeName, attributeType));
+			attributes.put(attributeName, new UMLAttribute(attributeName, attributeType));
 		}		
 		return attributes;
 	}
 	
-	Vector<UMLOperation> ParseClassOperations()
+	HashMap<String, UMLOperation> ParseClassOperations()
 	{
-		Vector<UMLOperation> operations = new Vector<UMLOperation>();
+		HashMap<String, UMLOperation> operations = new HashMap<String, UMLOperation>();
 		String test = scanner.next();
 		scanner.skip(Pattern.compile("\\s+"));
 		while(!scanner.hasNext(Pattern.compile(";")))
@@ -129,19 +130,19 @@ public class Parser {
 			}
 			returnType = returnType.replaceAll("\\s+","");
 			
-			Vector<UMLAttribute> attributes = ParseOperationAttributes(operationLine.substring(attributesStartingIndex +1, attributesEndingIndex));
+			HashMap<String, UMLAttribute> attributes = ParseOperationAttributes(operationLine.substring(attributesStartingIndex +1, attributesEndingIndex));
 			
 			UMLOperation operation = new UMLOperation(operationName, returnType);
 			operation.AddAttributes(attributes);
 			
-			operations.addElement(operation);			
+			operations.put(operationName, operation);			
 		}		
 		return operations;
 	}
 	
-	Vector<UMLAttribute> ParseOperationAttributes(String attributeLine)
+	HashMap<String, UMLAttribute> ParseOperationAttributes(String attributeLine)
 	{
-		Vector<UMLAttribute> attributes = new Vector<UMLAttribute>();
+		HashMap<String, UMLAttribute> attributes = new HashMap<String, UMLAttribute>();
 		Scanner lineScanner = new Scanner(attributeLine);
 		while(lineScanner.hasNext())
 		{
@@ -152,7 +153,7 @@ public class Parser {
 			{
 				attributeType = attributeType.substring(0, attributeType.length()-1);
 			}
-			attributes.addElement(new UMLAttribute(attributeName, attributeType));			
+			attributes.put(attributeName, new UMLAttribute(attributeName, attributeType));			
 		}		
 		lineScanner.close();
 		System.out.println(attributes);
@@ -177,7 +178,7 @@ public class Parser {
 	
 	UMLAggregation ParseAggregation()
 	{
-		Vector<UMLRole> parts = new Vector<UMLRole>();
+		HashMap<String, UMLRole> parts = new HashMap<String, UMLRole>();
 		
 		scanner.next();
 		scanner.next();
@@ -196,7 +197,7 @@ public class Parser {
 			{
 				partMultiplicity = partMultiplicity.substring(0, partMultiplicity.length()-1);
 			}
-			parts.addElement(new UMLRole(partName, partMultiplicity));
+			parts.put(partName, new UMLRole(partName, partMultiplicity));
 		}
 
 		return new UMLAggregation(new UMLRole(containerName, containerMultiplicity), parts);		
@@ -204,7 +205,7 @@ public class Parser {
 	
 	UMLGeneralization ParseGeneralization()
 	{
-		Vector<String> subClasses = new Vector<String>();
+		HashMap<String, String> subClasses = new HashMap<String, String>();
 		scanner.next();
 		String generalizationName = scanner.next();
 		scanner.next();
@@ -216,7 +217,7 @@ public class Parser {
 			{
 				subClass = subClass.substring(0, subClass.length()-1);
 			}
-			subClasses.addElement(subClass);
+			subClasses.put(subClass, subClass);
 			
 		}
 		

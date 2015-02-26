@@ -7,6 +7,10 @@ public class UMLAttribute {
 		_type = type;
 	}
 	
+	public String toString()
+	{
+		return _type + " " + _name;
+	}
 	String _name;
 	String _type;
 }

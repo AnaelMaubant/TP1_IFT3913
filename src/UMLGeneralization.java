@@ -1,17 +1,22 @@
+import java.util.HashMap;
 import java.util.Vector;
 
 
 public class UMLGeneralization {
 	
-	UMLGeneralization(String name, Vector<String> subclasses)
+	UMLGeneralization(String name, HashMap<String, String> subclasses)
 	{
 		_generalizationName = name;
 		_subClasses = subclasses;
 		
 	}
 	
+	public String toString()
+	{
+		return _generalizationName;
+	}
 	String _generalizationName;
-	Vector<String> _subClasses;
+	HashMap<String, String> _subClasses;
 	
 
 }

@@ -8,6 +8,10 @@ public class UMLAssociation {
 		_name = name;
 	}
 	
+	public String toString()
+	{
+		return _name;
+	}
 	UMLRole _firstRole;
 	UMLRole _secondRole;
 	String _name;
