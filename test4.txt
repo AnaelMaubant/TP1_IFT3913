@@ -1,0 +1,43 @@
+MODEL Aviation
+CLASS Personne 
+ATTRIBUTES 
+      nom_personne : String,
+      nas : Integer,
+      sexe:Boolean
+OPERATIONS
+      nombre_personne() : Integer,
+     
+      add_personne(element : Personne) : void
+;
+
+CLASS Voiture 
+ATTRIBUTES 
+nom : String,
+marque :String
+OPERATIONS 
+;
+
+CLASS Avion
+ATTRIBUTES 
+      modele : String,
+      sieges : String
+OPERATIONS 
+      nombre_carburant() : Integer
+     
+;
+
+CLASS Helicoptere
+ATTRIBUTES 
+      modele : String
+OPERATIONS 
+;
+
+CLASS Bateau
+ATTRIBUTES 
+      nom : String,
+      adresse : String
+OPERATIONS 
+      Utilise_par(eq : Equipe, annee : Integer) : Boolean
+;
+
+

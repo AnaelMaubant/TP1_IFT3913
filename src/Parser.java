@@ -39,6 +39,7 @@ public class Parser {
 	{
 		fileContent = fileContent.replace(";", "\n;\n");
 		fileContent = fileContent.replace(",", ",\n");
+		fileContent = fileContent.replace(":", " : ");
 		return fileContent;
 	}
 	

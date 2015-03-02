@@ -7,7 +7,13 @@ CLASS Participant
 ATTRIBUTES 
 nom :                  String
          OPERATIONS 
-    ;
+    ;AGGREGATION 
+CONTAINER 
+       CLASS Equipe ONE
+PARTS
+       CLASS Joueur ONE_OR_MANY
+;
+
 
 CLASS      Joueur
 ATTRIBUTES     
@@ -48,9 +54,3 @@ RELATION dirige
        CLASS Equipe ONE
 ;
 
-AGGREGATION 
-CONTAINER 
-       CLASS Equipe ONE
-PARTS
-       CLASS Joueur ONE_OR_MANY
-;
