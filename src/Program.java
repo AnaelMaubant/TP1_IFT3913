@@ -45,9 +45,6 @@ public class Program {
 
     public static void main(String s[])
     {
-    	parser = new Parser("test.txt");
-       	parser.ParseFile();
-
         mainFrame=new JFrame("Programme Parseur");
         mainFrame.getContentPane().setLayout(new BorderLayout(10,10));
         mainFrame.setSize(640,480);
@@ -62,7 +59,7 @@ public class Program {
 		final JFileChooser fileChooser = new JFileChooser("src/"); 
 		
 		CreateTopPanel(mainFrame, jPanelTop, fileChooser);
-		CreateClassPanel(parser.parsedFile, mainFrame);
+		CreateClassPanel(mainFrame);
 		CreateAttributesPanel(mainFrame, jPanelCenter);
 		CreateMethodsPanel(mainFrame, jPanelCenter);
 		CreateSubClassesPanel(mainFrame, jPanelCenter);
@@ -76,7 +73,7 @@ public class Program {
 
     }
     
-    public static void CreateClassPanel(ParsedFile parsedFile, final JFrame mainFrame)
+    public static void CreateClassPanel(final JFrame mainFrame)
     {
     	JPanel jPanelClasses=new JPanel();
         jPanelClasses.setLayout(new BorderLayout());
@@ -84,11 +81,7 @@ public class Program {
         final JLabel labelClasse = new JLabel("Classes");
   
         final DefaultListModel<UMLClass> classesModel = new DefaultListModel<UMLClass>();
-        for(Entry<String, UMLClass> entry : parsedFile._classes.entrySet())
-        {
-        	classesModel.addElement(entry.getValue());	
-        }
-             
+        
         classesList = new JList<UMLClass>(classesModel);
 
         jPanelClasses.add(labelClasse, BorderLayout.NORTH);
@@ -163,7 +156,7 @@ public class Program {
         jPanelDetails.setLayout(new BoxLayout(jPanelDetails, BoxLayout.Y_AXIS));
         jPanelDetails.setPreferredSize(new Dimension(10,100));
         JLabel labelDetails = new JLabel("Détails");
-        JTextArea textDetails=new JTextArea();
+        textDetails=new JTextArea();
         jPanelDetails.add(labelDetails);
         jPanelDetails.add(textDetails);
         mainFrame.getContentPane().add(jPanelDetails,BorderLayout.SOUTH);
@@ -187,6 +180,10 @@ public class Program {
                 {
                     file = fileChooser.getSelectedFile();
                     textfield.setText(file.getName());
+                	parser = new Parser(file.getName());
+                   	parser.ParseFile();
+                   	ClearLists();
+                   	FillClassList(parser.parsedFile._classes);
                 }    
             } 
         });
@@ -202,10 +199,13 @@ public class Program {
     		@Override
     		public void valueChanged(ListSelectionEvent arg0)
     		{
-    			FillMethodList(classesList.getSelectedValue()._operations);
-    			FillAttributesList(classesList.getSelectedValue()._attributes);
-    			FillSubClassesList(parser.parsedFile._generalizations);
-    			FillAggregationsList(parser.parsedFile._aggregations, parser.parsedFile._associations);
+    			if(classesList.getSelectedValue() != null && classesList.getValueIsAdjusting())
+    			{
+        			FillMethodList(classesList.getSelectedValue()._operations);
+        			FillAttributesList(classesList.getSelectedValue()._attributes);
+        			FillSubClassesList(parser.parsedFile._generalizations);
+        			FillAggregationsList(parser.parsedFile._aggregations, parser.parsedFile._associations);
+    			}
     		}
     	});
     	
@@ -223,7 +223,10 @@ public class Program {
     		@Override
     		public void valueChanged(ListSelectionEvent arg0)
     		{
-    			
+    			if(aggregationsList.getSelectedValue() != null && aggregationsList.getValueIsAdjusting())
+    			{
+    				CreateAggregationDetails(aggregationsList.getSelectedValue());
+    			}    			
     		}
     	});
     	
@@ -236,6 +239,19 @@ public class Program {
     	});
     	
     }
+    
+    public static void FillClassList(HashMap<String, UMLClass> hash)
+    {
+        final DefaultListModel<UMLClass> classesModel = new DefaultListModel<UMLClass>();
+        for(Entry<String, UMLClass> entry : hash.entrySet())
+        {
+        	classesModel.addElement(entry.getValue());	
+        }
+             
+        classesList.setModel(classesModel);
+    	
+    }
+    
     public static void FillMethodList(HashMap<String, UMLOperation> hash)
     {
     	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
@@ -304,16 +320,51 @@ public class Program {
         aggregationsList.setModel(aggregationsModel);    	
     }
     
-    public static void CreateOperationDetails(UMLOperation operation)
-    {
-    	//String textAreaContent = operation.
-    }
-    public static void CreateAttributeDetails(UMLAttribute attribute)
-    {}
-    public static void CreateSubClassesDetails(String subClass)
-    {}
     public static void CreateAggregationDetails(UMLAggregationListObject aggregation)
-    {}
+    {
+    	String detailsString = "";
+    	if(aggregation._aggregation != null)
+    	{
+    		detailsString += "AGGREGATION\nCONTAINER\n\tCLASS ";
+    		detailsString += aggregation._aggregation._container._className;
+    		detailsString += aggregation._aggregation._container._multiplicity + "\n";
+    		
+    		detailsString += "PARTS\n";
+    		
+    		for(Entry<String, UMLRole> entry : aggregation._aggregation._parts.entrySet())
+    		{
+    			detailsString += "\tCLASS" + entry.getValue()._className + " " + entry.getValue()._multiplicity + "\n";
+    		}
+    	}
+    	else
+    	{
+    		detailsString += "RELATION " + aggregation._association._name + "\n";
+    		detailsString += "\tROLES\n\t";
+    		detailsString += "CLASS " + aggregation._association._firstRole._className + " " + aggregation._association._firstRole._multiplicity + "\n\t";
+    		detailsString += "CLASS " + aggregation._association._secondRole._className + " " + aggregation._association._secondRole._multiplicity;
+    	}
+    	textDetails.setText(detailsString);
+    }
+    
+    public static void ClearLists()
+    {
+    	DefaultListModel<UMLClass> classesModel = (DefaultListModel<UMLClass>) classesList.getModel();
+    	classesModel.removeAllElements();
+    	
+    	DefaultListModel<UMLOperation> operationsModel = (DefaultListModel<UMLOperation>) operationsList.getModel();
+    	operationsModel.removeAllElements();
+        
+    	DefaultListModel<UMLAttribute> attributesModel = (DefaultListModel<UMLAttribute>) attributesList.getModel();
+    	attributesModel.removeAllElements();
+        
+    	DefaultListModel<String> subClassesModel = (DefaultListModel<String>) subClassesList.getModel();
+    	subClassesModel.removeAllElements();
+        
+    	DefaultListModel<UMLAggregationListObject> aggregationsModel = (DefaultListModel<UMLAggregationListObject>) aggregationsList.getModel();
+    	aggregationsModel.removeAllElements();    
+    	
+    	textDetails.setText("");
+    }
     
     public static Parser parser;
     public static JPanel jPanelCenter;
@@ -322,6 +373,7 @@ public class Program {
     public static JList<UMLAttribute> attributesList;
     public static JList<String> subClassesList;
     public static JList<UMLAggregationListObject> aggregationsList;
+    public static JTextArea textDetails;
     public static JPanel jPanelTop;
     public static JFrame mainFrame;
  

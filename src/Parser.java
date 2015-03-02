@@ -1,9 +1,14 @@
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Vector;
 import java.util.regex.Pattern;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 
 public class Parser {
@@ -13,14 +18,28 @@ public class Parser {
 		parsedFile = new ParsedFile();
 		try 
 		{
-			scanner = new Scanner(new File(filePath));
+			byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+			String fileContent = new String(encoded, Charset.defaultCharset());
+			fileContent = PreprocessFile(fileContent);
+			scanner = new Scanner(fileContent);
 		}
 		catch(FileNotFoundException e)
 		{
 			System.out.println("Working Directory = " +
 		              System.getProperty("user.dir"));
 			
-		}	
+		}
+		catch(IOException ex)
+		{
+			
+		}
+	}
+
+	String PreprocessFile(String fileContent)
+	{
+		fileContent = fileContent.replace(";", "\n;\n");
+		fileContent = fileContent.replace(",", ",\n");
+		return fileContent;
 	}
 	
 	void ParseFile()
@@ -72,7 +91,6 @@ public class Parser {
 	{
 		scanner.next();
 		String className = scanner.next();
-	//	System.out.println(className);
 		UMLClass umlClass= new UMLClass(className);
 		umlClass.AddAttributes(ParseClassAttributes());
 		umlClass.AddOperations(ParseClassOperations());
@@ -90,15 +108,12 @@ public class Parser {
 		while(!scanner.hasNext(Pattern.compile("OPERATIONS")))
 		{
 			String attributeName = scanner.next();
-		//	System.out.println(attributeName);
 			scanner.next();
 			String attributeType = scanner.next();
 			if(attributeType.charAt(attributeType.length()-1) == ',')
 			{
 				attributeType = attributeType.substring(0, attributeType.length()-1);
-			//	System.out.println(attributeType);
 			}
-		//	System.out.println(attributes);
 			attributes.put(attributeName, new UMLAttribute(attributeName, attributeType));
 		}		
 		return attributes;
@@ -112,6 +127,15 @@ public class Parser {
 		while(!scanner.hasNext(Pattern.compile(";")))
 		{
 			String operationLine = scanner.nextLine();
+			while(operationLine.equals("\n") || operationLine.equals(""))
+			{
+				operationLine = scanner.nextLine();
+			}
+			
+			if(!operationLine.contains(")"))
+			{
+				operationLine += scanner.nextLine();
+			}
 			int attributesStartingIndex = operationLine.indexOf("(");
 			int attributesEndingIndex = operationLine.indexOf(")");
 			int returnTypeStartingIndex = operationLine.lastIndexOf(":");
@@ -156,7 +180,6 @@ public class Parser {
 			attributes.put(attributeName, new UMLAttribute(attributeName, attributeType));			
 		}		
 		lineScanner.close();
-		System.out.println(attributes);
 		return attributes;
 	}
 	

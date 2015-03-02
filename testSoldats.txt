@@ -1,0 +1,1 @@
+Model Arme CLASS General ATTRIBUTES nom_general : String OPERATIONS promote(soldat : Soldat) : void      ,     depromote(soldat : Soldat) : void;CLASS Soldat ATTRIBUTES nom_soldat : String OPERATIONS;RELATION dirige ROLES CLASS General ONE,CLASS Soldat ONE_OR_MANY;
