@@ -64,6 +64,7 @@ public class Program {
 		CreateMethodsPanel(mainFrame, jPanelCenter);
 		CreateSubClassesPanel(mainFrame, jPanelCenter);
 		CreateAggregationsPanel(mainFrame, jPanelCenter);
+		CreateMetriquesPanel(mainFrame);
 		CreateDetailsPanel(mainFrame);
 		CreateListeners();
 		
@@ -150,6 +151,22 @@ public class Program {
         mainPanel.add(jPanelAssoc);
     }
     
+    public static void CreateMetriquesPanel(JFrame mainFrame)
+    {
+    	JPanel jPanelMetriques=new JPanel();
+        jPanelMetriques.setLayout(new BoxLayout(jPanelMetriques, BoxLayout.Y_AXIS));
+        jPanelMetriques.setPreferredSize(new Dimension(100,10));
+        JLabel labelMetriques = new JLabel("Metriques");
+        textMetriques=new JTextArea();
+        textMetriques.append("ANA =" + "\n" + "NOM =" + "\n" + "NOA =" +  "\n" + "ITC =" + "\n"+ "ETC =" + "\n" +"CAC =" + "\n" + "DIT =" + "\n" +"CLD =" + "\n" + "NOC =" + "\n" +"NOD =" + "\n");
+        jPanelMetriques.add(labelMetriques);
+        jPanelMetriques.add(textMetriques);
+        
+        mainFrame.getContentPane().add(jPanelMetriques,BorderLayout.EAST);
+    }
+    
+    
+    
     public static void CreateDetailsPanel(JFrame mainFrame)
     {
 		JPanel jPanelDetails=new JPanel();
@@ -168,8 +185,9 @@ public class Program {
     	mainFrame.getContentPane().add(topPanel,BorderLayout.NORTH);
     	topPanel.setLayout(new FlowLayout());
     	
-        final JTextField textfield=new JTextField(35);
+        final JTextField textfield=new JTextField(30);
         final JButton button = new JButton();
+        final JButton button1=new JButton();
         
         button.addActionListener(new ActionListener()
         {
@@ -188,9 +206,19 @@ public class Program {
             } 
         });
         
+        button1.addActionListener(new ActionListener()
+        {
+        	 public void actionPerformed(ActionEvent e)
+             {
+        		 
+             }
+        });
+        
         button.setText("Charger Fichier");
+        button1.setText("Calculer métriques");
         topPanel.add(button);
         topPanel.add(textfield);
+        topPanel.add(button1);
     }
     
     public static void CreateListeners()
@@ -280,13 +308,33 @@ public class Program {
     
     public static void FillAttributesList(HashMap<String, UMLAttribute> hash)
     {
+    	int compteur =0;
     	final DefaultListModel<UMLAttribute> attributesModel = new DefaultListModel<UMLAttribute>();
         for(Entry<String, UMLAttribute> entry : hash.entrySet())
         {
-        	attributesModel.addElement(entry.getValue());	
+        	attributesModel.addElement(entry.getValue());
+        	compteur +=hash.size();
+            System.out.println("compteur =" +compteur);
         }
              
         attributesList.setModel(attributesModel);    	
+    }
+    
+    public static int NOA(HashMap<String, UMLAttribute> hash)
+    {
+    	int compteur =0;
+    	final DefaultListModel<UMLAttribute> attributesModel = new DefaultListModel<UMLAttribute>();
+        for(Entry<String, UMLAttribute> entry : hash.entrySet())
+        {
+        	attributesModel.addElement(entry.getValue());
+        	attributesList.setModel(attributesModel);
+        	compteur +=hash.size();
+       	 
+        	System.out.println("compteur 2 =" +compteur);
+                }
+      //  attributesList.setModel(attributesModel);
+        return compteur;
+        
     }
     
     public static void FillAggregationsList(HashMap<String, UMLAggregation> aggregationsHash, HashMap<String, UMLAssociation> associationsHash)
@@ -373,7 +421,9 @@ public class Program {
     public static JList<UMLAttribute> attributesList;
     public static JList<String> subClassesList;
     public static JList<UMLAggregationListObject> aggregationsList;
+    public static JList metriquesList;
     public static JTextArea textDetails;
+    public static JTextArea textMetriques;
     public static JPanel jPanelTop;
     public static JFrame mainFrame;
  
