@@ -68,7 +68,7 @@ public class Program {
 		CreateDetailsPanel(mainFrame);
 		CreateListeners();
 		
-		
+		 
 		
         mainFrame.setVisible(true);
 
@@ -158,10 +158,11 @@ public class Program {
         jPanelMetriques.setPreferredSize(new Dimension(100,10));
         JLabel labelMetriques = new JLabel("Metriques");
         textMetriques=new JTextArea();
-        textMetriques.append("ANA =" + "\n" + "NOM =" + "\n" + "NOA =" +  "\n" + "ITC =" + "\n"+ "ETC =" + "\n" +"CAC =" + "\n" + "DIT =" + "\n" +"CLD =" + "\n" + "NOC =" + "\n" +"NOD =" + "\n");
+       // textMetriques.append("ANA =" + "\n" + "NOM =" + "\n" + "NOA =" + x+ "\n" + "ITC =" + "\n"+ "ETC =" + "\n" +"CAC =" + "\n" + "DIT =" + "\n" +"CLD =" + "\n" + "NOC =" + "\n" +"NOD =" + "\n");
+        
         jPanelMetriques.add(labelMetriques);
         jPanelMetriques.add(textMetriques);
-        
+        System.out.println("x"+x);
         mainFrame.getContentPane().add(jPanelMetriques,BorderLayout.EAST);
     }
     
@@ -231,8 +232,11 @@ public class Program {
     			{
         			FillMethodList(classesList.getSelectedValue()._operations);
         			FillAttributesList(classesList.getSelectedValue()._attributes);
+        			 x=NOA(classesList.getSelectedValue()._attributes);
+        			 System.out.println("X1="+x);
         			FillSubClassesList(parser.parsedFile._generalizations);
         			FillAggregationsList(parser.parsedFile._aggregations, parser.parsedFile._associations);
+        			CreateMetriquesDetails(classesList.getSelectedValue());
     			}
     		}
     	});
@@ -288,7 +292,23 @@ public class Program {
         	operationsModel.addElement(entry.getValue());	
         }
              
-        operationsList.setModel(operationsModel);       
+        operationsList.setModel(operationsModel);  
+        System.out.println("Modele methodes ="+operationsModel.getSize());
+    }
+    
+    public static int NOM(HashMap<String, UMLOperation> hash)
+    {
+    	int compteur=0;
+    	final DefaultListModel<UMLOperation> operationsModel1 = new DefaultListModel<UMLOperation>();
+        for(Entry<String, UMLOperation> entry : hash.entrySet())
+        {
+        	operationsModel1.addElement(entry.getValue());	
+        }
+             
+        operationsList.setModel(operationsModel1); 
+        compteur+=operationsModel1.getSize();
+        return compteur;
+        
     }
     
     public static void FillSubClassesList(HashMap<String, UMLGeneralization> hash)
@@ -313,28 +333,34 @@ public class Program {
         for(Entry<String, UMLAttribute> entry : hash.entrySet())
         {
         	attributesModel.addElement(entry.getValue());
-        	compteur +=hash.size();
-            System.out.println("compteur =" +compteur);
+        	
         }
              
-        attributesList.setModel(attributesModel);    	
+        attributesList.setModel(attributesModel);   
+        System.out.println("Modele attribut ="+attributesModel.getSize());
+       
     }
     
     public static int NOA(HashMap<String, UMLAttribute> hash)
     {
+    	//FillAttributesList(classesList.getSelectedValue()._attributes);
     	int compteur =0;
-    	final DefaultListModel<UMLAttribute> attributesModel = new DefaultListModel<UMLAttribute>();
-        for(Entry<String, UMLAttribute> entry : hash.entrySet())
+    	final DefaultListModel<UMLAttribute> attributesModel1 = new DefaultListModel<UMLAttribute>();
+        for(Entry<String, UMLAttribute> entry : classesList.getSelectedValue()._attributes.entrySet())
         {
-        	attributesModel.addElement(entry.getValue());
-        	attributesList.setModel(attributesModel);
-        	compteur +=hash.size();
-       	 
-        	System.out.println("compteur 2 =" +compteur);
-                }
-      //  attributesList.setModel(attributesModel);
-        return compteur;
-        
+        	attributesModel1.addElement(entry.getValue());
+        	
+        }
+        attributesList.setModel(attributesModel1);
+      //  System.out.println("Modele compteur1 =" +classesList.getSelectedValue()._attributes.size());
+      //  attributesList.setModel(attributesModel1);   
+        System.out.println("Modele compteur ="+attributesModel1.getSize());
+        //System.out.println(parser.parsedFile._classes.size());
+        compteur+=attributesModel1.getSize();
+        System.out.println("Compteur = "+compteur);
+		return compteur;
+    
+    
     }
     
     public static void FillAggregationsList(HashMap<String, UMLAggregation> aggregationsHash, HashMap<String, UMLAssociation> associationsHash)
@@ -394,6 +420,18 @@ public class Program {
     	textDetails.setText(detailsString);
     }
     
+    public static void CreateMetriquesDetails(UMLClass umlClass)
+    {
+    	String detailsString = "";
+    	if(UMLClass.class != null)
+    	{
+    		detailsString += "NOM = "+NOM(classesList.getSelectedValue()._operations)+"\n";
+    		detailsString += "NOA = "+NOA(classesList.getSelectedValue()._attributes)+"\n";
+    		
+    	}
+    	textMetriques.setText(detailsString);
+    }
+    
     public static void ClearLists()
     {
     	DefaultListModel<UMLClass> classesModel = (DefaultListModel<UMLClass>) classesList.getModel();
@@ -413,6 +451,7 @@ public class Program {
     	
     	textDetails.setText("");
     }
+   
     
     public static Parser parser;
     public static JPanel jPanelCenter;
@@ -426,6 +465,8 @@ public class Program {
     public static JTextArea textMetriques;
     public static JPanel jPanelTop;
     public static JFrame mainFrame;
+    public static int x;
+   
  
     }
 
