@@ -286,6 +286,7 @@ public class Program {
     
     public static void FillMethodList(HashMap<String, UMLOperation> hash)
     {
+    	float y=0;
     	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
         for(Entry<String, UMLOperation> entry : hash.entrySet())
         {
@@ -293,7 +294,45 @@ public class Program {
         }
              
         operationsList.setModel(operationsModel);  
-        System.out.println("Modele methodes ="+operationsModel.getSize());
+       // System.out.println("Modele methodes ="+operationsModel.getSize());
+        //System.out.println("Arguments  ="+operationsModel.toString());
+      //  System.out.println("Arguments de el ="+operationsModel.elementAt(2)._attributes.size());
+        System.out.println("Arguments de listemethode  ="+operationsModel.getSize());
+        //for(int i=0; i<operationsModel.getSize();i++){
+     //   y=((float)operationsModel.elementAt(2)._attributes.size() / operationsModel.getSize());
+     //   System.out.println( "y"+y );
+        
+    }
+    
+    public static float ANA(HashMap<String, UMLOperation> hash)
+    {
+    	float elements=0;
+    	float compteur =0;
+    	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
+        for(Entry<String, UMLOperation> entry : hash.entrySet())
+        {
+        	operationsModel.addElement(entry.getValue());	
+        }
+             
+        operationsList.setModel(operationsModel);  
+        
+         for(int i=0; i<operationsModel.getSize();i++)
+         {
+        	 if(operationsModel.getSize()!=0 ){
+        	 
+        	         	 elements+=operationsModel.elementAt(i)._attributes.size();
+        	         	compteur=(float)(elements/operationsModel.getSize());
+        	 }
+        	 else {
+        		compteur=operationsModel.getSize();
+        	 }
+        	
+         }
+		return compteur;
+         
+        
+        
+        
     }
     
     public static int NOM(HashMap<String, UMLOperation> hash)
@@ -425,6 +464,7 @@ public class Program {
     	String detailsString = "";
     	if(UMLClass.class != null)
     	{
+    		detailsString += "ANA = "+ANA(classesList.getSelectedValue()._operations)+"\n";
     		detailsString += "NOM = "+NOM(classesList.getSelectedValue()._operations)+"\n";
     		detailsString += "NOA = "+NOA(classesList.getSelectedValue()._attributes)+"\n";
     		
