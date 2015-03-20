@@ -68,8 +68,7 @@ public class Program {
 		CreateDetailsPanel(mainFrame);
 		CreateListeners();
 		
-		 
-		
+		 		
         mainFrame.setVisible(true);
 
     }
@@ -158,8 +157,6 @@ public class Program {
         jPanelMetriques.setPreferredSize(new Dimension(100,10));
         JLabel labelMetriques = new JLabel("Metriques");
         textMetriques=new JTextArea();
-       // textMetriques.append("ANA =" + "\n" + "NOM =" + "\n" + "NOA =" + x+ "\n" + "ITC =" + "\n"+ "ETC =" + "\n" +"CAC =" + "\n" + "DIT =" + "\n" +"CLD =" + "\n" + "NOC =" + "\n" +"NOD =" + "\n");
-        
         jPanelMetriques.add(labelMetriques);
         jPanelMetriques.add(textMetriques);
         System.out.println("x"+x);
@@ -281,12 +278,30 @@ public class Program {
         }
              
         classesList.setModel(classesModel);
+        
+        System.out.println("nom de la classe"+classesModel.elementAt(0)._name);
+    	
+    }
+    
+    public static String NameOfClass(HashMap<String, UMLClass> hash)
+    {
+    	String nameClass ="";
+        final DefaultListModel<UMLClass> classesModel = new DefaultListModel<UMLClass>();
+        for(Entry<String, UMLClass> entry : hash.entrySet())
+        {
+        	classesModel.addElement(entry.getValue());	
+        }
+             
+        classesList.setModel(classesModel);
+        for(int i=0; i<classesModel.getSize();i++){
+        nameClass=classesModel.elementAt(i)._name;}
+		return nameClass;
     	
     }
     
     public static void FillMethodList(HashMap<String, UMLOperation> hash)
     {
-    	float y=0;
+    	String y ="";
     	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
         for(Entry<String, UMLOperation> entry : hash.entrySet())
         {
@@ -298,58 +313,23 @@ public class Program {
         //System.out.println("Arguments  ="+operationsModel.toString());
       //  System.out.println("Arguments de el ="+operationsModel.elementAt(2)._attributes.size());
         System.out.println("Arguments de listemethode  ="+operationsModel.getSize());
-        //for(int i=0; i<operationsModel.getSize();i++){
-     //   y=((float)operationsModel.elementAt(2)._attributes.size() / operationsModel.getSize());
-     //   System.out.println( "y"+y );
-        
-    }
-    
-    public static float ANA(HashMap<String, UMLOperation> hash)
-    {
-    	float elements=0;
-    	float compteur =0;
-    	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
-        for(Entry<String, UMLOperation> entry : hash.entrySet())
+        for(int i=0; i<operationsModel.getSize();i++)
         {
-        	operationsModel.addElement(entry.getValue());	
+        	for(int j=0;j<operationsModel.elementAt(i)._attributes.size();j++)
+        	{
+     
+        //    y=operationsModel.elementAt(i)._attributes.get(j)._type;
+        	}
+       
         }
-             
-        operationsList.setModel(operationsModel);  
         
-         for(int i=0; i<operationsModel.getSize();i++)
-         {
-        	 if(operationsModel.getSize()!=0 ){
-        	 
-        	         	 elements+=operationsModel.elementAt(i)._attributes.size();
-        	         	compteur=(float)(elements/operationsModel.getSize());
-        	 }
-        	 else {
-        		compteur=operationsModel.getSize();
-        	 }
-        	
-         }
-		return compteur;
-         
-        
-        
+      //  System.out.println( "y"+y );
+      //  System.out.println( "y"+operationsModel.elementAt(2)._attributes.keySet();
+       // System.out.println( "y"+operationsModel.elementAt(2)._attributes.get(._name)._type.equals(NameOfClass(parser.parsedFile._classes)));
         
     }
     
-    public static int NOM(HashMap<String, UMLOperation> hash)
-    {
-    	int compteur=0;
-    	final DefaultListModel<UMLOperation> operationsModel1 = new DefaultListModel<UMLOperation>();
-        for(Entry<String, UMLOperation> entry : hash.entrySet())
-        {
-        	operationsModel1.addElement(entry.getValue());	
-        }
-             
-        operationsList.setModel(operationsModel1); 
-        compteur+=operationsModel1.getSize();
-        return compteur;
-        
-    }
-    
+     
     public static void FillSubClassesList(HashMap<String, UMLGeneralization> hash)
     {
     	final DefaultListModel<String> subClassesModel = new DefaultListModel<String>();
@@ -372,6 +352,9 @@ public class Program {
         for(Entry<String, UMLAttribute> entry : hash.entrySet())
         {
         	attributesModel.addElement(entry.getValue());
+        	System.out.println("la clef est"+entry.getKey());
+        	System.out.println("la valeur est"+entry.getValue());
+        	System.out.println("le type"+attributesModel.elementAt(0)._type);
         	
         }
              
@@ -380,27 +363,7 @@ public class Program {
        
     }
     
-    public static int NOA(HashMap<String, UMLAttribute> hash)
-    {
-    	//FillAttributesList(classesList.getSelectedValue()._attributes);
-    	int compteur =0;
-    	final DefaultListModel<UMLAttribute> attributesModel1 = new DefaultListModel<UMLAttribute>();
-        for(Entry<String, UMLAttribute> entry : classesList.getSelectedValue()._attributes.entrySet())
-        {
-        	attributesModel1.addElement(entry.getValue());
-        	
-        }
-        attributesList.setModel(attributesModel1);
-      //  System.out.println("Modele compteur1 =" +classesList.getSelectedValue()._attributes.size());
-      //  attributesList.setModel(attributesModel1);   
-        System.out.println("Modele compteur ="+attributesModel1.getSize());
-        //System.out.println(parser.parsedFile._classes.size());
-        compteur+=attributesModel1.getSize();
-        System.out.println("Compteur = "+compteur);
-		return compteur;
-    
-    
-    }
+   
     
     public static void FillAggregationsList(HashMap<String, UMLAggregation> aggregationsHash, HashMap<String, UMLAssociation> associationsHash)
     {
@@ -467,6 +430,7 @@ public class Program {
     		detailsString += "ANA = "+ANA(classesList.getSelectedValue()._operations)+"\n";
     		detailsString += "NOM = "+NOM(classesList.getSelectedValue()._operations)+"\n";
     		detailsString += "NOA = "+NOA(classesList.getSelectedValue()._attributes)+"\n";
+    	//	detailsString += "ITC = "+ITC(classesList.getSelectedValue()._operations)+"\n";
     		
     	}
     	textMetriques.setText(detailsString);
@@ -491,7 +455,104 @@ public class Program {
     	
     	textDetails.setText("");
     }
+    
+    
    
+    /*    
+     *     Les Differentes metriques a calculer
+     */
+    
+    //1. ANA(ci) : Nombre moyen d’arguments des méthodes locales pour la classe ci.
+    public static float ANA(HashMap<String, UMLOperation> hash)
+    {
+    	float elements=0;
+    	float compteur =0;
+    	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
+        for(Entry<String, UMLOperation> entry : hash.entrySet())
+        {
+        	operationsModel.addElement(entry.getValue());	
+        }
+             
+        operationsList.setModel(operationsModel);  
+        
+         for(int i=0; i<operationsModel.getSize();i++)
+         {
+        	 if(operationsModel.getSize()!=0 ){
+        	 
+        	         	 elements+=operationsModel.elementAt(i)._attributes.size();
+        	         	compteur=(float)(elements/operationsModel.getSize());
+        	 }
+        	 else {
+        		compteur=operationsModel.getSize();
+        	 }
+        	
+         }
+		return compteur;
+             
+    }
+    
+    //2. NOM(ci) : Nombre de méthodes locales/héritées de la classe ci.
+    public static int NOM(HashMap<String, UMLOperation> hash)
+    {
+    	int compteur=0;
+    	final DefaultListModel<UMLOperation> operationsModel1 = new DefaultListModel<UMLOperation>();
+        for(Entry<String, UMLOperation> entry : hash.entrySet())
+        {
+        	operationsModel1.addElement(entry.getValue());	
+        }
+             
+        operationsList.setModel(operationsModel1); 
+        compteur+=operationsModel1.getSize();
+        return compteur;
+        
+    }
+    
+    //3. NOA(ci) : Nombre d’attributs locaux/hérités de la classe ci
+    public static int NOA(HashMap<String, UMLAttribute> hash)
+    {
+       	int compteur =0;
+    	final DefaultListModel<UMLAttribute> attributesModel1 = new DefaultListModel<UMLAttribute>();
+        for(Entry<String, UMLAttribute> entry : classesList.getSelectedValue()._attributes.entrySet())
+        {
+        	attributesModel1.addElement(entry.getValue());
+        	
+        }
+        attributesList.setModel(attributesModel1);
+         
+        System.out.println("Modele compteur ="+attributesModel1.getSize());
+        compteur+=attributesModel1.getSize();
+        System.out.println("Compteur = "+compteur);
+		return compteur;
+    }
+    
+    //4. ITC(ci) : Nombre de fois où d’autres classes du diagramme apparaissent comme types des arguments des méthodes de ci.
+    public static float ITC(HashMap<String, UMLOperation> hash)
+    {
+    	float elements=0;
+    	float compteur =0;
+    	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
+        for(Entry<String, UMLOperation> entry : hash.entrySet())
+        {
+        	operationsModel.addElement(entry.getValue());	
+        }
+             
+        operationsList.setModel(operationsModel);  
+        
+         for(int i=0; i<operationsModel.getSize();i++)
+         {
+        	 if(operationsModel.elementAt(i)._attributes.equals((classesList.getSelectedValue()._name))){
+        	 
+        	         	
+        	         	compteur++;
+        	 }
+        	 else {
+        		compteur=0;
+        	 }
+        	
+         }
+		return compteur;
+    }
+    
     
     public static Parser parser;
     public static JPanel jPanelCenter;

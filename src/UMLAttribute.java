@@ -11,6 +11,11 @@ public class UMLAttribute {
 	{
 		return _type + " " + _name;
 	}
+	
+	public String toType()
+	{
+		return _type;
+	}
 	String _name;
 	String _type;
 }
