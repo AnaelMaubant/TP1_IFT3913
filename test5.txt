@@ -12,7 +12,7 @@ OPERATIONS
 
 CLASS Voiture 
 ATTRIBUTES 
-nom : String
+nom :String
 marque:String
 OPERATIONS 
 ;

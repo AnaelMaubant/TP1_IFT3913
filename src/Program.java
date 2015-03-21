@@ -94,7 +94,7 @@ public class Program {
     {
         JPanel jPanelMethodes=new JPanel();
         jPanelMethodes.setLayout(new BorderLayout());
-        JLabel labelMeth = new JLabel("Méthodes");
+        JLabel labelMeth = new JLabel("Methodes");
         
         final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
         operationsList = new JList<UMLOperation>(operationsModel);
@@ -139,7 +139,7 @@ public class Program {
     {
         JPanel jPanelAssoc=new JPanel();
         jPanelAssoc.setLayout(new BorderLayout());
-        JLabel labelAssoc = new JLabel("Associations/Aggrégations");
+        JLabel labelAssoc = new JLabel("Associations/Aggregations");
         
         final DefaultListModel<UMLAggregationListObject> aggregationsModel = new DefaultListModel<UMLAggregationListObject>();
         aggregationsList = new JList<UMLAggregationListObject>(aggregationsModel);
@@ -170,7 +170,7 @@ public class Program {
 		JPanel jPanelDetails=new JPanel();
         jPanelDetails.setLayout(new BoxLayout(jPanelDetails, BoxLayout.Y_AXIS));
         jPanelDetails.setPreferredSize(new Dimension(10,100));
-        JLabel labelDetails = new JLabel("Détails");
+        JLabel labelDetails = new JLabel("Details");
         textDetails=new JTextArea();
         jPanelDetails.add(labelDetails);
         jPanelDetails.add(textDetails);
@@ -196,7 +196,7 @@ public class Program {
                 {
                     file = fileChooser.getSelectedFile();
                     textfield.setText(file.getName());
-                	parser = new Parser(file.getName());
+                	parser = new Parser(file.getAbsolutePath());
                    	parser.ParseFile();
                    	ClearLists();
                    	FillClassList(parser.parsedFile._classes);

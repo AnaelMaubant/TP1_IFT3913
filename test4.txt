@@ -7,7 +7,7 @@ ATTRIBUTES
 OPERATIONS
       nombre_personne() : Integer,
      
-      add_personne(element : Personne) : void
+      add_personne ( element : Personne ) : void
 ;
 
 CLASS Voiture 
