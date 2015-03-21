@@ -229,8 +229,6 @@ public class Program {
     			{
         			FillMethodList(classesList.getSelectedValue()._operations);
         			FillAttributesList(classesList.getSelectedValue()._attributes);
-        			 x=NOA(classesList.getSelectedValue()._attributes);
-        			 System.out.println("X1="+x);
         			FillSubClassesList(parser.parsedFile._generalizations);
         			FillAggregationsList(parser.parsedFile._aggregations, parser.parsedFile._associations);
         			CreateMetriquesDetails(classesList.getSelectedValue());
@@ -277,10 +275,7 @@ public class Program {
         	classesModel.addElement(entry.getValue());	
         }
              
-        classesList.setModel(classesModel);
-        
-        System.out.println("nom de la classe"+classesModel.elementAt(0)._name);
-    	
+        classesList.setModel(classesModel);    	
     }
     
     public static String NameOfClass(HashMap<String, UMLClass> hash)
@@ -301,7 +296,6 @@ public class Program {
     
     public static void FillMethodList(HashMap<String, UMLOperation> hash)
     {
-    	String y ="";
     	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
         for(Entry<String, UMLOperation> entry : hash.entrySet())
         {
@@ -309,24 +303,6 @@ public class Program {
         }
              
         operationsList.setModel(operationsModel);  
-       // System.out.println("Modele methodes ="+operationsModel.getSize());
-        //System.out.println("Arguments  ="+operationsModel.toString());
-      //  System.out.println("Arguments de el ="+operationsModel.elementAt(2)._attributes.size());
-        System.out.println("Arguments de listemethode  ="+operationsModel.getSize());
-        for(int i=0; i<operationsModel.getSize();i++)
-        {
-        	for(int j=0;j<operationsModel.elementAt(i)._attributes.size();j++)
-        	{
-     
-        //    y=operationsModel.elementAt(i)._attributes.get(j)._type;
-        	}
-       
-        }
-        
-      //  System.out.println( "y"+y );
-      //  System.out.println( "y"+operationsModel.elementAt(2)._attributes.keySet();
-       // System.out.println( "y"+operationsModel.elementAt(2)._attributes.get(._name)._type.equals(NameOfClass(parser.parsedFile._classes)));
-        
     }
     
      
@@ -347,19 +323,13 @@ public class Program {
     
     public static void FillAttributesList(HashMap<String, UMLAttribute> hash)
     {
-    	int compteur =0;
     	final DefaultListModel<UMLAttribute> attributesModel = new DefaultListModel<UMLAttribute>();
         for(Entry<String, UMLAttribute> entry : hash.entrySet())
         {
-        	attributesModel.addElement(entry.getValue());
-        	System.out.println("la clef est"+entry.getKey());
-        	System.out.println("la valeur est"+entry.getValue());
-        	System.out.println("le type"+attributesModel.elementAt(0)._type);
-        	
+        	attributesModel.addElement(entry.getValue());        	
         }
              
         attributesList.setModel(attributesModel);   
-        System.out.println("Modele attribut ="+attributesModel.getSize());
        
     }
     
@@ -430,8 +400,13 @@ public class Program {
     		detailsString += "ANA = "+ANA(classesList.getSelectedValue()._operations)+"\n";
     		detailsString += "NOM = "+NOM(classesList.getSelectedValue()._operations)+"\n";
     		detailsString += "NOA = "+NOA(classesList.getSelectedValue()._attributes)+"\n";
-    	//	detailsString += "ITC = "+ITC(classesList.getSelectedValue()._operations)+"\n";
-    		
+    		detailsString += "ITC = "+ITC(parser.parsedFile ,classesList.getSelectedValue()._operations)+"\n";
+    		detailsString += "ETC = "+ETC(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
+    		detailsString += "CAC = "+CAC(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
+    		detailsString += "DIT = "+DIT(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
+    		detailsString += "CLD = "+CLD(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
+    		detailsString += "NOC = "+NOC(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
+    		detailsString += "NOD = "+NOD(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
     	}
     	textMetriques.setText(detailsString);
     }
@@ -465,93 +440,207 @@ public class Program {
     //1. ANA(ci) : Nombre moyen d’arguments des méthodes locales pour la classe ci.
     public static float ANA(HashMap<String, UMLOperation> hash)
     {
-    	float elements=0;
-    	float compteur =0;
-    	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
+    	float argumentsTotal = 0;
+    	float methodNumber = 0;
+
         for(Entry<String, UMLOperation> entry : hash.entrySet())
         {
-        	operationsModel.addElement(entry.getValue());	
+        	argumentsTotal += entry.getValue()._attributes.size();
+        	methodNumber += 1;
         }
-             
-        operationsList.setModel(operationsModel);  
         
-         for(int i=0; i<operationsModel.getSize();i++)
-         {
-        	 if(operationsModel.getSize()!=0 ){
-        	 
-        	         	 elements+=operationsModel.elementAt(i)._attributes.size();
-        	         	compteur=(float)(elements/operationsModel.getSize());
-        	 }
-        	 else {
-        		compteur=operationsModel.getSize();
-        	 }
-        	
-         }
-		return compteur;
+        float mean = argumentsTotal/methodNumber;
+             
+		return mean;
              
     }
     
     //2. NOM(ci) : Nombre de méthodes locales/héritées de la classe ci.
     public static int NOM(HashMap<String, UMLOperation> hash)
     {
-    	int compteur=0;
-    	final DefaultListModel<UMLOperation> operationsModel1 = new DefaultListModel<UMLOperation>();
-        for(Entry<String, UMLOperation> entry : hash.entrySet())
-        {
-        	operationsModel1.addElement(entry.getValue());	
-        }
-             
-        operationsList.setModel(operationsModel1); 
-        compteur+=operationsModel1.getSize();
-        return compteur;
-        
+    	return hash.size();
     }
     
     //3. NOA(ci) : Nombre d’attributs locaux/hérités de la classe ci
     public static int NOA(HashMap<String, UMLAttribute> hash)
     {
-       	int compteur =0;
-    	final DefaultListModel<UMLAttribute> attributesModel1 = new DefaultListModel<UMLAttribute>();
-        for(Entry<String, UMLAttribute> entry : classesList.getSelectedValue()._attributes.entrySet())
-        {
-        	attributesModel1.addElement(entry.getValue());
-        	
-        }
-        attributesList.setModel(attributesModel1);
-         
-        System.out.println("Modele compteur ="+attributesModel1.getSize());
-        compteur+=attributesModel1.getSize();
-        System.out.println("Compteur = "+compteur);
-		return compteur;
+		return hash.size();
     }
     
     //4. ITC(ci) : Nombre de fois où d’autres classes du diagramme apparaissent comme types des arguments des méthodes de ci.
-    public static float ITC(HashMap<String, UMLOperation> hash)
+    public static float ITC(ParsedFile parsedFile, HashMap<String, UMLOperation> hash)
     {
-    	float elements=0;
-    	float compteur =0;
-    	final DefaultListModel<UMLOperation> operationsModel = new DefaultListModel<UMLOperation>();
-        for(Entry<String, UMLOperation> entry : hash.entrySet())
-        {
-        	operationsModel.addElement(entry.getValue());	
-        }
-             
-        operationsList.setModel(operationsModel);  
-        
-         for(int i=0; i<operationsModel.getSize();i++)
-         {
-        	 if(operationsModel.elementAt(i)._attributes.equals((classesList.getSelectedValue()._name))){
-        	 
-        	         	
-        	         	compteur++;
-        	 }
-        	 else {
-        		compteur=0;
-        	 }
-        	
-         }
-		return compteur;
+    	int compteur =0;
+    	for(Entry<String, UMLOperation> entry : hash.entrySet())
+    	{
+    		for(Entry<String, UMLAttribute> argumentEntry : entry.getValue()._attributes.entrySet())
+    		{
+    			if(parsedFile._classes.containsKey(argumentEntry.getValue()._type))
+    			{
+    				compteur++;
+    			}
+    		}
+    	}
+    	return compteur;
     }
+    
+    //5. ETC(ci) : Nombre de fois où ci apparaît comme type des arguments dans les méthodes des autres classes du diagramme.
+    public static float ETC(ParsedFile parsedFile, String className)
+    {
+    	int compteur =0;
+    	for(Entry<String, UMLClass> entryClass : parsedFile._classes.entrySet())
+    	{
+    		for(Entry<String, UMLOperation> entryMethod : entryClass.getValue()._operations.entrySet())
+    		{
+    			for(Entry<String, UMLAttribute> argumentEntry : entryMethod.getValue()._attributes.entrySet())
+    			{
+    				if(argumentEntry.getValue()._type.equals(className))
+    				{
+    					compteur++;
+    				}
+    			}
+    		}
+    	}
+    	return compteur;
+    }
+    
+    //6 CAC(ci) : Nombre d’associations (incluant les agrégations) locales/héritées auxquelles participe une classe ci.
+    public static float CAC(ParsedFile parsedFile, String className)
+    {
+    	int compteur =0;
+    	for(Entry<String, UMLAggregation> entry : parsedFile._aggregations.entrySet())
+    	{
+    		if(entry.getValue()._container._className.equals(className))
+    		{
+    			compteur ++;
+    		}
+    		else
+    		{
+    			for(Entry<String, UMLRole> entryRole : entry.getValue()._parts.entrySet())
+    			{
+    				if(entryRole.getValue()._className.equals(className))
+    				{
+    					compteur ++;
+    				}
+    			}
+    		}
+    	}
+    	
+    	for(Entry<String, UMLAssociation> entry : parsedFile._associations.entrySet())
+    	{
+    		if(entry.getValue()._firstRole._className.equals(className) || entry.getValue()._secondRole._className.equals(className))
+    		{
+    			compteur++;
+    		}
+    	}    	
+    	return compteur;
+    }
+    
+    //7 Taille du chemin le plus long reliant une classe ci à une classe racine dans le graphe d’héritage.
+    public static float DIT(ParsedFile parsedFile, String className)
+    {
+    	int compteur =0;
+    	String currentClassName = GetParentClass(parsedFile, className);
+    	while(!currentClassName.equals("No parent class"))
+    	{
+    		compteur ++;    		
+    		currentClassName = GetParentClass(parsedFile, currentClassName);
+    	}
+    	
+    	return compteur;
+    }
+    
+    //8  CLD(ci) : Taille du chemin le plus long reliant une classe ci à une classe feuille dans le graphe d’héritage.
+    public static float CLD(ParsedFile parsedFile, String className)
+    {
+    	int compteur =0;
+    	compteur = GetChildrenCLD(parsedFile, className);
+    	
+    	return compteur;    	
+    }
+    
+    //9 NOC(ci) : Nombre de sous-classes directes de ci.
+    public static float NOC(ParsedFile parsedFile, String className)
+    {
+    	int compteur=0;
+    	
+    	if(parsedFile._generalizations.containsKey(className))
+    	{
+    		compteur = parsedFile._generalizations.get(className)._subClasses.size();
+    	}
+    	
+    	return compteur;
+    }
+    
+    //10 NOD(ci) : Nombre de sous-classes directes et indirectes de ci.
+    public static float NOD(ParsedFile parsedFile, String className)
+    {
+    	int compteur =0;
+    	compteur = GetChildrenNOD(parsedFile, className);
+    	
+    	return compteur;
+    }
+    
+    public static String GetParentClass(ParsedFile parsedFile, String className)
+    {
+    	for(Entry<String, UMLGeneralization> entry : parsedFile._generalizations.entrySet())
+    	{
+    		for(Entry<String, String> entrySubClasses : entry.getValue()._subClasses.entrySet())
+    		{
+    			if(entrySubClasses.getValue().equals(className))
+    			{
+    				return entry.getValue()._generalizationName;
+    			}
+    		}
+    	}    	
+    	return "No parent class";
+    }
+    
+    public static int GetChildrenCLD(ParsedFile parsedFile, String className)
+    {
+    	int compteur =0;
+    	
+    	if(!parsedFile._generalizations.containsKey(className))
+    	{
+    		return compteur;
+    	}
+    	else
+    	{
+    		for(Entry<String, String> entry :  parsedFile._generalizations.get(className)._subClasses.entrySet())
+    		{
+    			int childrenCLD = GetChildrenCLD(parsedFile, entry.getValue());
+    			if(compteur < childrenCLD)
+    			{
+    				compteur = childrenCLD;
+    			}    				
+    		}
+    	}
+  	
+    	compteur ++;
+    	return compteur;
+    }
+    
+	
+	public static int GetChildrenNOD(ParsedFile parsedFile, String className)
+	{
+    	int compteur =0;
+    	
+    	if(!parsedFile._generalizations.containsKey(className))
+    	{
+    		return compteur;
+    	}
+    	else
+    	{
+    		compteur = parsedFile._generalizations.get(className)._subClasses.size();
+    		
+    		for(Entry<String, String> entry :  parsedFile._generalizations.get(className)._subClasses.entrySet())
+    		{
+    			int childrenCLD = GetChildrenNOD(parsedFile, entry.getValue());
+    			compteur += childrenCLD;
+    		}
+    	}
+    	return compteur;
+	}
     
     
     public static Parser parser;
