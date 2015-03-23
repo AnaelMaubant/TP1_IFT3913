@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
@@ -12,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +35,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.DefaultListCellRenderer;
@@ -44,10 +51,10 @@ import javax.swing.DefaultListCellRenderer;
 public class Program {
 
     public static void main(String s[])
-    {
+    {    	
         mainFrame=new JFrame("Programme Parseur");
         mainFrame.getContentPane().setLayout(new BorderLayout(10,10));
-        mainFrame.setSize(640,480);
+        mainFrame.setSize(640,540);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
         
         jPanelTop=new JPanel();
@@ -57,8 +64,9 @@ public class Program {
 		jPanelCenter.setLayout(new GridLayout(2,2,5,5));
 		
 		final JFileChooser fileChooser = new JFileChooser("src/"); 
+		final JFileChooser fileChooserMetriques = new JFileChooser("src/"); 
 		
-		CreateTopPanel(mainFrame, jPanelTop, fileChooser);
+		CreateTopPanel(mainFrame, jPanelTop, fileChooser, fileChooserMetriques);
 		CreateClassPanel(mainFrame);
 		CreateAttributesPanel(mainFrame, jPanelCenter);
 		CreateMethodsPanel(mainFrame, jPanelCenter);
@@ -153,13 +161,69 @@ public class Program {
     public static void CreateMetriquesPanel(JFrame mainFrame)
     {
     	JPanel jPanelMetriques=new JPanel();
-        jPanelMetriques.setLayout(new BoxLayout(jPanelMetriques, BoxLayout.Y_AXIS));
-        jPanelMetriques.setPreferredSize(new Dimension(100,10));
+        jPanelMetriques.setLayout(new BorderLayout());
         JLabel labelMetriques = new JLabel("Metriques");
-        textMetriques=new JTextArea();
-        jPanelMetriques.add(labelMetriques);
-        jPanelMetriques.add(textMetriques);
-        System.out.println("x"+x);
+        
+        textMetriquesHTML = new JEditorPane();
+        textMetriquesHTML.setContentType("text/html");
+        textMetriquesHTML.setEditable(false);
+        textMetriquesHTML.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);     
+        ToolTipManager.sharedInstance().registerComponent(textMetriquesHTML);
+        
+        textMetriquesHTML.addHyperlinkListener(new HyperlinkListener() {
+        	public void hyperlinkUpdate(HyperlinkEvent event) {
+        		if(HyperlinkEvent.EventType.ENTERED.equals(event.getEventType())) {
+        			if(event.getDescription().equalsIgnoreCase("ANA"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre moyen d’arguments des méthodes locales pour la classe ci.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("NOM"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre de méthodes locales/héritées de la classe ci. Dans le cas où une méthode est héritée et redéfinie localement (même nom, même ordre et types des arguments et même type de retour), elle ne compte qu’une fois.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("NOA"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre d’attributs locaux/hérités de la classe ci.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("ITC"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre de fois où d’autres classes du diagramme apparaissent comme types des arguments des méthodes de ci.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("ETC"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre de fois où ci apparaît comme type des arguments dans les méthodes des autres classes du diagramme.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("CAC"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre d’associations (incluant les agrégations) locales/héritées auxquelles participe une classe ci.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("DIT"))
+        			{
+        				textMetriquesHTML.setToolTipText("Taille du chemin le plus long reliant une classe ci à une classe racine dans le graphe d’héritage.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("CLD"))
+        			{
+        				textMetriquesHTML.setToolTipText("Taille du chemin le plus long reliant une classe ci à une classe feuille dans le graphe d’héritage.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("NOC"))
+        			{
+        				textMetriquesHTML.setToolTipText(" Nombre de sous-classes directes de ci.");
+        			}
+        			else if(event.getDescription().equalsIgnoreCase("NOD"))
+        			{
+        				textMetriquesHTML.setToolTipText("Nombre de sous-classes directes et indirectes de ci.");
+        			}
+        			
+        		}
+        		else if (HyperlinkEvent.EventType.EXITED.equals(event.getEventType()))
+        		{
+        			textMetriquesHTML.setToolTipText(null);
+        		}
+        	}
+        });
+        
+        jPanelMetriques.add(labelMetriques, BorderLayout.NORTH);
+        jPanelMetriques.add(textMetriquesHTML, BorderLayout.CENTER);
         mainFrame.getContentPane().add(jPanelMetriques,BorderLayout.EAST);
     }
     
@@ -177,7 +241,7 @@ public class Program {
         mainFrame.getContentPane().add(jPanelDetails,BorderLayout.SOUTH);
     }
 
-    public static void CreateTopPanel(JFrame mainFrame,JPanel topPanel, final JFileChooser fileChooser)
+    public static void CreateTopPanel(JFrame mainFrame,JPanel topPanel, final JFileChooser fileChooser, final JFileChooser fileChooserMetriques)
     {
     	
     	mainFrame.getContentPane().add(topPanel,BorderLayout.NORTH);
@@ -185,7 +249,7 @@ public class Program {
     	
         final JTextField textfield=new JTextField(30);
         final JButton button = new JButton();
-        final JButton button1=new JButton();
+        final JButton buttonMetriques=new JButton();
         
         button.addActionListener(new ActionListener()
         {
@@ -200,23 +264,35 @@ public class Program {
                    	parser.ParseFile();
                    	ClearLists();
                    	FillClassList(parser.parsedFile._classes);
+                   	buttonMetriques.setEnabled(true);
                 }    
             } 
         });
         
-        button1.addActionListener(new ActionListener()
+        buttonMetriques.addActionListener(new ActionListener()
         {
         	 public void actionPerformed(ActionEvent e)
              {
-        		 
+                 if(fileChooserMetriques.showOpenDialog(null) ==JFileChooser.APPROVE_OPTION)
+                 {
+                	 try(FileWriter fw = new FileWriter(fileChooserMetriques.getSelectedFile()+".txt"))
+                	 {
+                		    fw.write(MetricsCalculator.CreateMetricsMatrix(parser.parsedFile));
+                	 }
+                	 catch (IOException e1)
+                	 {
+							e1.printStackTrace();
+					 }
+                 }    
              }
         });
         
         button.setText("Charger Fichier");
-        button1.setText("Calculer métriques");
+        buttonMetriques.setText("Calculer métriques");
+        buttonMetriques.setEnabled(false);
         topPanel.add(button);
         topPanel.add(textfield);
-        topPanel.add(button1);
+        topPanel.add(buttonMetriques);
     }
     
     public static void CreateListeners()
@@ -304,8 +380,7 @@ public class Program {
              
         operationsList.setModel(operationsModel);  
     }
-    
-     
+         
     public static void FillSubClassesList(HashMap<String, UMLGeneralization> hash)
     {
     	final DefaultListModel<String> subClassesModel = new DefaultListModel<String>();
@@ -332,8 +407,6 @@ public class Program {
         attributesList.setModel(attributesModel);   
        
     }
-    
-   
     
     public static void FillAggregationsList(HashMap<String, UMLAggregation> aggregationsHash, HashMap<String, UMLAssociation> associationsHash)
     {
@@ -397,18 +470,18 @@ public class Program {
     	String detailsString = "";
     	if(UMLClass.class != null)
     	{
-    		detailsString += "ANA = "+ANA(classesList.getSelectedValue()._operations)+"\n";
-    		detailsString += "NOM = "+NOM(classesList.getSelectedValue()._operations)+"\n";
-    		detailsString += "NOA = "+NOA(classesList.getSelectedValue()._attributes)+"\n";
-    		detailsString += "ITC = "+ITC(parser.parsedFile ,classesList.getSelectedValue()._operations)+"\n";
-    		detailsString += "ETC = "+ETC(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
-    		detailsString += "CAC = "+CAC(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
-    		detailsString += "DIT = "+DIT(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
-    		detailsString += "CLD = "+CLD(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
-    		detailsString += "NOC = "+NOC(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
-    		detailsString += "NOD = "+NOD(parser.parsedFile ,classesList.getSelectedValue()._name)+"\n";
+    		detailsString += "<p><a href= 'ANA'> ANA</a> = " + MetricsCalculator.ANA(classesList.getSelectedValue()._operations) + "</p>";
+    		detailsString += "<p><a href= 'NOM'> NOM</a> = " + MetricsCalculator.NOM(classesList.getSelectedValue()._operations) + "</p>";
+    		detailsString += "<p><a href= 'NOA'> NOA</a> = " + MetricsCalculator.NOA(classesList.getSelectedValue()._attributes) + "</p>";
+    		detailsString += "<p><a href= 'ITC'> ITC</a> = " + MetricsCalculator.ITC(parser.parsedFile ,classesList.getSelectedValue()._operations) + "</p>";
+    		detailsString += "<p><a href= 'ETC'> ETC</a> = " + MetricsCalculator.ETC(parser.parsedFile ,classesList.getSelectedValue()._name) + "</p>";
+    		detailsString += "<p><a href= 'CAC'> CAC</a> = " + MetricsCalculator.CAC(parser.parsedFile ,classesList.getSelectedValue()._name) + "</p>";
+    		detailsString += "<p><a href= 'DIT'> DIT</a> = " + MetricsCalculator.DIT(parser.parsedFile ,classesList.getSelectedValue()._name) + "</p>";
+    		detailsString += "<p><a href= 'CLD'> CLD</a> = " + MetricsCalculator.CLD(parser.parsedFile ,classesList.getSelectedValue()._name) + "</p>";
+    		detailsString += "<p><a href= 'NOC'> NOC</a> = " + MetricsCalculator.NOC(parser.parsedFile ,classesList.getSelectedValue()._name) + "</p>";
+    		detailsString += "<p><a href= 'NOD'> NOD</a> = " + MetricsCalculator.NOD(parser.parsedFile ,classesList.getSelectedValue()._name) + "</p>";
     	}
-    	textMetriques.setText(detailsString);
+    	textMetriquesHTML.setText(detailsString);
     }
     
     public static void ClearLists()
@@ -433,214 +506,7 @@ public class Program {
     
     
    
-    /*    
-     *     Les Differentes metriques a calculer
-     */
     
-    //1. ANA(ci) : Nombre moyen d’arguments des méthodes locales pour la classe ci.
-    public static float ANA(HashMap<String, UMLOperation> hash)
-    {
-    	float argumentsTotal = 0;
-    	float methodNumber = 0;
-
-        for(Entry<String, UMLOperation> entry : hash.entrySet())
-        {
-        	argumentsTotal += entry.getValue()._attributes.size();
-        	methodNumber += 1;
-        }
-        
-        float mean = argumentsTotal/methodNumber;
-             
-		return mean;
-             
-    }
-    
-    //2. NOM(ci) : Nombre de méthodes locales/héritées de la classe ci.
-    public static int NOM(HashMap<String, UMLOperation> hash)
-    {
-    	return hash.size();
-    }
-    
-    //3. NOA(ci) : Nombre d’attributs locaux/hérités de la classe ci
-    public static int NOA(HashMap<String, UMLAttribute> hash)
-    {
-		return hash.size();
-    }
-    
-    //4. ITC(ci) : Nombre de fois où d’autres classes du diagramme apparaissent comme types des arguments des méthodes de ci.
-    public static float ITC(ParsedFile parsedFile, HashMap<String, UMLOperation> hash)
-    {
-    	int compteur =0;
-    	for(Entry<String, UMLOperation> entry : hash.entrySet())
-    	{
-    		for(Entry<String, UMLAttribute> argumentEntry : entry.getValue()._attributes.entrySet())
-    		{
-    			if(parsedFile._classes.containsKey(argumentEntry.getValue()._type))
-    			{
-    				compteur++;
-    			}
-    		}
-    	}
-    	return compteur;
-    }
-    
-    //5. ETC(ci) : Nombre de fois où ci apparaît comme type des arguments dans les méthodes des autres classes du diagramme.
-    public static float ETC(ParsedFile parsedFile, String className)
-    {
-    	int compteur =0;
-    	for(Entry<String, UMLClass> entryClass : parsedFile._classes.entrySet())
-    	{
-    		for(Entry<String, UMLOperation> entryMethod : entryClass.getValue()._operations.entrySet())
-    		{
-    			for(Entry<String, UMLAttribute> argumentEntry : entryMethod.getValue()._attributes.entrySet())
-    			{
-    				if(argumentEntry.getValue()._type.equals(className))
-    				{
-    					compteur++;
-    				}
-    			}
-    		}
-    	}
-    	return compteur;
-    }
-    
-    //6 CAC(ci) : Nombre d’associations (incluant les agrégations) locales/héritées auxquelles participe une classe ci.
-    public static float CAC(ParsedFile parsedFile, String className)
-    {
-    	int compteur =0;
-    	for(Entry<String, UMLAggregation> entry : parsedFile._aggregations.entrySet())
-    	{
-    		if(entry.getValue()._container._className.equals(className))
-    		{
-    			compteur ++;
-    		}
-    		else
-    		{
-    			for(Entry<String, UMLRole> entryRole : entry.getValue()._parts.entrySet())
-    			{
-    				if(entryRole.getValue()._className.equals(className))
-    				{
-    					compteur ++;
-    				}
-    			}
-    		}
-    	}
-    	
-    	for(Entry<String, UMLAssociation> entry : parsedFile._associations.entrySet())
-    	{
-    		if(entry.getValue()._firstRole._className.equals(className) || entry.getValue()._secondRole._className.equals(className))
-    		{
-    			compteur++;
-    		}
-    	}    	
-    	return compteur;
-    }
-    
-    //7 Taille du chemin le plus long reliant une classe ci à une classe racine dans le graphe d’héritage.
-    public static float DIT(ParsedFile parsedFile, String className)
-    {
-    	int compteur =0;
-    	String currentClassName = GetParentClass(parsedFile, className);
-    	while(!currentClassName.equals("No parent class"))
-    	{
-    		compteur ++;    		
-    		currentClassName = GetParentClass(parsedFile, currentClassName);
-    	}
-    	
-    	return compteur;
-    }
-    
-    //8  CLD(ci) : Taille du chemin le plus long reliant une classe ci à une classe feuille dans le graphe d’héritage.
-    public static float CLD(ParsedFile parsedFile, String className)
-    {
-    	int compteur =0;
-    	compteur = GetChildrenCLD(parsedFile, className);
-    	
-    	return compteur;    	
-    }
-    
-    //9 NOC(ci) : Nombre de sous-classes directes de ci.
-    public static float NOC(ParsedFile parsedFile, String className)
-    {
-    	int compteur=0;
-    	
-    	if(parsedFile._generalizations.containsKey(className))
-    	{
-    		compteur = parsedFile._generalizations.get(className)._subClasses.size();
-    	}
-    	
-    	return compteur;
-    }
-    
-    //10 NOD(ci) : Nombre de sous-classes directes et indirectes de ci.
-    public static float NOD(ParsedFile parsedFile, String className)
-    {
-    	int compteur =0;
-    	compteur = GetChildrenNOD(parsedFile, className);
-    	
-    	return compteur;
-    }
-    
-    public static String GetParentClass(ParsedFile parsedFile, String className)
-    {
-    	for(Entry<String, UMLGeneralization> entry : parsedFile._generalizations.entrySet())
-    	{
-    		for(Entry<String, String> entrySubClasses : entry.getValue()._subClasses.entrySet())
-    		{
-    			if(entrySubClasses.getValue().equals(className))
-    			{
-    				return entry.getValue()._generalizationName;
-    			}
-    		}
-    	}    	
-    	return "No parent class";
-    }
-    
-    public static int GetChildrenCLD(ParsedFile parsedFile, String className)
-    {
-    	int compteur =0;
-    	
-    	if(!parsedFile._generalizations.containsKey(className))
-    	{
-    		return compteur;
-    	}
-    	else
-    	{
-    		for(Entry<String, String> entry :  parsedFile._generalizations.get(className)._subClasses.entrySet())
-    		{
-    			int childrenCLD = GetChildrenCLD(parsedFile, entry.getValue());
-    			if(compteur < childrenCLD)
-    			{
-    				compteur = childrenCLD;
-    			}    				
-    		}
-    	}
-  	
-    	compteur ++;
-    	return compteur;
-    }
-    
-	
-	public static int GetChildrenNOD(ParsedFile parsedFile, String className)
-	{
-    	int compteur =0;
-    	
-    	if(!parsedFile._generalizations.containsKey(className))
-    	{
-    		return compteur;
-    	}
-    	else
-    	{
-    		compteur = parsedFile._generalizations.get(className)._subClasses.size();
-    		
-    		for(Entry<String, String> entry :  parsedFile._generalizations.get(className)._subClasses.entrySet())
-    		{
-    			int childrenCLD = GetChildrenNOD(parsedFile, entry.getValue());
-    			compteur += childrenCLD;
-    		}
-    	}
-    	return compteur;
-	}
     
     
     public static Parser parser;
@@ -652,7 +518,7 @@ public class Program {
     public static JList<UMLAggregationListObject> aggregationsList;
     public static JList metriquesList;
     public static JTextArea textDetails;
-    public static JTextArea textMetriques;
+    public static JEditorPane textMetriquesHTML;
     public static JPanel jPanelTop;
     public static JFrame mainFrame;
     public static int x;
