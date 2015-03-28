@@ -11,6 +11,10 @@ public class MetricsCalculator {
     //1. ANA(ci) : Nombre moyen d’arguments des méthodes locales pour la classe ci.
     public static float ANA(HashMap<String, UMLOperation> hash)
     {
+    	if(hash.size()==0)
+    	{
+    		return 0;
+    	}
     	float argumentsTotal = 0;
     	float methodNumber = 0;
 

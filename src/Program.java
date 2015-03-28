@@ -258,13 +258,23 @@ public class Program {
             	 File file;
                 if(fileChooser.showOpenDialog(null) ==JFileChooser.APPROVE_OPTION)
                 {
-                    file = fileChooser.getSelectedFile();
-                    textfield.setText(file.getName());
-                	parser = new Parser(file.getAbsolutePath());
-                   	parser.ParseFile();
-                   	ClearLists();
-                   	FillClassList(parser.parsedFile._classes);
-                   	buttonMetriques.setEnabled(true);
+                	try
+                	{
+                		file = fileChooser.getSelectedFile();
+                		textfield.setText(file.getName());
+                		parser = new Parser(file.getAbsolutePath());
+                		parser.ParseFile();
+                		ClearLists();
+                   		FillClassList(parser.parsedFile._classes);
+                   		buttonMetriques.setEnabled(true);
+                   		textDetails.setText("");
+                   		textDetails.setForeground(Color.BLACK);
+                	}
+                	catch(BadGrammarException badGrammarEx)
+                	{
+                		textDetails.setText("Bad grammar error : " + badGrammarEx.getMessage());
+                		textDetails.setForeground(Color.RED);
+                	}
                 }    
             } 
         });
@@ -308,6 +318,7 @@ public class Program {
         			FillSubClassesList(parser.parsedFile._generalizations);
         			FillAggregationsList(parser.parsedFile._aggregations, parser.parsedFile._associations);
         			CreateMetriquesDetails(classesList.getSelectedValue());
+        			textDetails.setText("");
     			}
     		}
     	});
